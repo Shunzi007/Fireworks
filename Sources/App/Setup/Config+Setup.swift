@@ -1,5 +1,7 @@
+import Vapor
 import LeafProvider
 import FluentProvider
+import PostgreSQLProvider
 
 extension Config {
     public func setup() throws {
@@ -15,6 +17,7 @@ extension Config {
     private func setupProviders() throws {
         try addProvider(LeafProvider.Provider.self)
         try addProvider(FluentProvider.Provider.self)
+        try addProvider(PostgreSQLProvider.Provider.self)
     }
     
     /// Add all models that should have their
