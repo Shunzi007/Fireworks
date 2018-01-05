@@ -14,6 +14,7 @@ extension Config {
     /// Configure providers
     private func setupProviders() throws {
         try addProvider(LeafProvider.Provider.self)
+        try addProvider(FluentProvider.Provider.self)
     }
     
     /// Add all models that should have their

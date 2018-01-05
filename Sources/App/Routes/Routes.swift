@@ -11,6 +11,10 @@ final class Routes: RouteCollection {
         builder.get { req in
             return try self.view.make("welcome")
         }
+        
+        builder.get("plaintext") { req in
+            return "Hello, world!"
+        }
 
         /// GET /hello/...
         builder.resource("hello", HelloController(view))
@@ -20,6 +24,8 @@ final class Routes: RouteCollection {
         builder.get("info") { req in
             return req.description
         }
+        
+        try builder.resource("posts", PostController.self)
 
     }
 }
