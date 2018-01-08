@@ -1,6 +1,7 @@
 import Vapor
 import FluentProvider
 import Crypto
+import Foundation
 
 final class Token: Model {
     let storage = Storage()
@@ -10,11 +11,14 @@ final class Token: Model {
 
     /// The identifier of the user to which the token belongs
     let userId: Identifier
-
+    
+    let expirationTime: String
+    
     /// Creates a new Token
     init(string: String, user: User) throws {
         token = string
         userId = try user.assertExists()
+        expirationTime = Date().exptFormatted
     }
 
     // MARK: Row
@@ -22,12 +26,14 @@ final class Token: Model {
     init(row: Row) throws {
         token = try row.get("token")
         userId = try row.get(User.foreignIdKey)
+        expirationTime = try row.get("expiration_time")
     }
 
     func makeRow() throws -> Row {
         var row = Row()
         try row.set("token", token)
         try row.set(User.foreignIdKey, userId)
+        try row.set("expiration_time", expirationTime)
         return row
     }
 }
@@ -64,6 +70,7 @@ extension Token: Preparation {
             builder.id()
             builder.string("token")
             builder.foreignId(for: User.self)
+            builder.date("expiration_time")
         }
     }
 
@@ -88,3 +95,27 @@ extension Token: JSONRepresentable {
 
 /// Allows the Token to be returned directly in route closures.
 extension Token: ResponseRepresentable { }
+
+extension Date {
+    /*
+     An expiration time formatted date string
+     */
+    public var exptFormatted: String {
+        return DateFormatter.sharedEXPTFormatter().string(from: self.addingTimeInterval(3600 * 24 * 7))
+    }
+}
+
+extension DateFormatter {
+    static func sharedEXPTFormatter() -> DateFormatter {
+        struct Static {
+            static let singleton: DateFormatter = .makeEXPTFormatter()
+        }
+        return Static.singleton
+    }
+    static func makeEXPTFormatter() -> DateFormatter {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        formatter.timeZone = TimeZone(identifier: "UTC")
+        return formatter
+    }
+}
