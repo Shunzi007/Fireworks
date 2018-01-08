@@ -27,12 +27,10 @@ class PassportCollection: RouteCollection {
                 throw Abort(.badRequest)
             }
             
+            // hash the password and set it on the user
             let config = try Config()
             try config.setup()
-            
             let drop = try Droplet(config)
-            try drop.setup()
-            // hash the password and set it on the user
             user.password = try drop.hash.make(password.makeBytes()).makeString()
             
             // save and return the new user
