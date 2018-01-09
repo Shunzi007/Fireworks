@@ -28,5 +28,11 @@ final class Routes: RouteCollection {
         try builder.resource("posts", PostController.self)
         
         try builder.grouped("passport").collection(PassportCollection())
+        // Authed to protect
+        let tokenMiddleware = TokenAuthenticationMiddleware(User.self)
+        let authed = builder.grouped(tokenMiddleware)
+        
+        
+            
     }
 }

@@ -48,20 +48,7 @@ class PassportCollection: RouteCollection {
             try token.save()
             return token
         }
-        
-        let token = builder.grouped([
-            TokenAuthenticationMiddleware(User.self)
-            ])
-        
-        // simply returns a greeting to the user that has been authed
-        // using the token middleware.
-        //
-        // GET /me
-        // Authorization: Bearer <token from /login>
-        token.get("me") { req in
-            let user = try req.user()
-            return "Hello, \(user.name)"
-        }
+
     }
 }
 
