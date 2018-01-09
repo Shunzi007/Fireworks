@@ -114,7 +114,7 @@ extension DateFormatter {
     }
     static func makeEXPTFormatter() -> DateFormatter {
         let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssxxxxx"
         formatter.timeZone = TimeZone(identifier: "UTC")
         return formatter
     }
