@@ -45,6 +45,8 @@ class PassportCollection: RouteCollection {
         password.post("signin") { req in
             let user = try req.user()
             let token = try Token.generate(for: user)
+            let allOwnedTokens = try Token.all().filter({ $0.userId == user.id })
+            try allOwnedTokens.forEach({ try $0.delete() })
             try token.save()
             return token
         }
