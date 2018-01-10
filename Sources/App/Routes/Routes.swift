@@ -32,7 +32,14 @@ final class Routes: RouteCollection {
         let tokenMiddleware = TokenAuthenticationMiddleware(User.self)
         let authed = builder.grouped(tokenMiddleware)
         
-        
+        let infoHandler: RouteHandler = { req in
+            let user = try req.user()
+            return "Hello, \(user.name)"
+        }
+        authed.post("info", handler: infoHandler)
+        authed.get("info", handler: infoHandler)
+        authed.put("info", handler: infoHandler)
+
             
     }
 }
