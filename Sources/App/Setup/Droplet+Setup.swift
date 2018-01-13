@@ -17,4 +17,10 @@ extension Droplet {
         
         User.passwordVerifier = verifier
     }
+    
+    public static func configed() throws -> Droplet {
+        let config = try Config()
+        try config.setup()
+        return try Droplet(config)
+    }
 }

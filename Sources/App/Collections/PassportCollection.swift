@@ -1,5 +1,6 @@
 import Vapor
 import AuthProvider
+import Run
 
 class PassportCollection: RouteCollection {
     func build(_ builder: RouteBuilder) {
@@ -28,10 +29,7 @@ class PassportCollection: RouteCollection {
             }
             
             // hash the password and set it on the user
-            let config = try Config()
-            try config.setup()
-            let drop = try Droplet(config)
-            user.password = try drop.hash.make(password.makeBytes()).makeString()
+            user.password = try Droplet.configed().hash.make(password.makeBytes()).makeString()
             
             // save and return the new user
             try user.save()
