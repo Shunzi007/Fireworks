@@ -1,5 +1,6 @@
 import Vapor
 import AuthProvider
+import FluentProvider
 
 class PassportCollection: RouteCollection {
     func build(_ builder: RouteBuilder) {
@@ -41,11 +42,15 @@ class PassportCollection: RouteCollection {
         
         password.post("signin") { req in
             let user = try req.user()
-            let token = try Token.generate(for: user)
-            let allOwnedTokens = try Token.all().filter({ $0.userId == user.id })
-            try allOwnedTokens.forEach({ try $0.delete() })
-            try token.save()
-            return token
+            let tokens = try Token.makeQuery().filter("user_id", .equals, user.id).all()
+            if let token = tokens.first, token.expirationTime.inExpire {
+                return token
+            }else {
+                try tokens.forEach({ try $0.delete() })
+                let token = try Token.generate(for: user)
+                try token.save()
+                return token
+            }
         }
 
     }

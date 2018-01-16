@@ -105,6 +105,20 @@ extension Date {
     }
 }
 
+extension String {
+    public var expired: Bool {
+        if let expireTime = DateFormatter.sharedEXPTFormatter().date(from: self) {
+            return Date() > expireTime
+        }else {
+            return false
+        }
+    }
+    
+    public var inExpire: Bool {
+        return !expired
+    }
+}
+
 extension DateFormatter {
     static func sharedEXPTFormatter() -> DateFormatter {
         struct Static {
@@ -114,7 +128,7 @@ extension DateFormatter {
     }
     static func makeEXPTFormatter() -> DateFormatter {
         let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssxxxxx"
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
         formatter.timeZone = TimeZone(identifier: "UTC")
         return formatter
     }
