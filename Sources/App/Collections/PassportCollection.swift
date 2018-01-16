@@ -1,6 +1,5 @@
 import Vapor
 import AuthProvider
-import Run
 
 class PassportCollection: RouteCollection {
     func build(_ builder: RouteBuilder) {
